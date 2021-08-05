@@ -4,8 +4,6 @@
 ;;; Code:
 
 ;; Load sources
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
 (load "~/.emacs.d/modules/entry.el")
 
 ;; Centralize backup files
