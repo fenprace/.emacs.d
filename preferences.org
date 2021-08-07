@@ -152,7 +152,7 @@ Indent Guides. Avoid using this in org-mode, it looks bad.
           (if (display-graphic-p) 'bitmap 'character)))
 #+END_SRC
 
-**** Rainbow Delimeters 
+**** Rainbow Delimeters
 Have fancy colorful parentheses.
 
 #+BEGIN_SRC emacs-lisp
@@ -165,7 +165,9 @@ View files in sidebar. Also install ~treemacs-evil~,
 ~treemacs-projectile~ here.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package treemacs)
+  (use-package treemacs
+    :config
+    (setq treemacs-width 25))
   (use-package treemacs-evil :after (:all treemacs evil))
   (use-package treemacs-projectile :after (:all treemacs projectile))
 #+END_SRC
@@ -391,3 +393,5 @@ Put ~custom.el~ out of ~init.el~.
 Some useful reads and resources.
 
 - [[https://nyk.ma/posts/emacs-write-your-own/][Emacs 自力求生指南——来写自己的配置吧]] by Myk Ma
+- [[https://joaotavora.github.io/yasnippet/snippet-development.html][Writing Snippets]]
+

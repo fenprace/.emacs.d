@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: Code Block
-# key:  codeblock
+# key: cb 
 # --
-#+BEGIN_SRC $1
-  $0
+#+BEGIN_SRC $0
+
 #+END_SRC

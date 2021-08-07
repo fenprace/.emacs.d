@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Code Block Elisp 
+# key: cbe
+# --
+#+BEGIN_SRC emacs-lisp
+  $0
+#+END_SRC
