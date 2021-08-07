@@ -3,7 +3,7 @@
 #+PROPERTY: :tangle yes :results silent :exports code
 
 * Preferences
-** Packages
+** Packages                                                        :package:
 Load all packages here. First make sure ~package.el~ and
 ~use-package.el~ are both installed. Otherwise, install
 ~use-package~ first with:
@@ -26,6 +26,7 @@ Load ~package.el~ and ~use-package~, setup sources:
   (require 'use-package)
   (setq use-package-always-ensure t)
 #+END_SRC   
+
 *** Evil                                                             :evil:
 **** Evil Leader                             :leader:lsp:counsel:treemacs:
 ~evil-leader~ must be loaded before ~evil~ package.
@@ -47,12 +48,15 @@ Load ~package.el~ and ~use-package~, setup sources:
 #+END_SRC
 
 **** Evil
-~evil~ itself.
+~evil~ itself. I add ~W~ and ~Q~ as ~evil-write~ and
+~evil-quit~ command.
 
 #+BEGIN_SRC emacs-lisp
   (use-package evil
     :after (:all evil-leader)
     :config
+    (evil-ex-define-cmd "W[rite]" 'evil-write)
+    (evil-ex-define-cmd "Q[uit]" 'evil-quit)
     (evil-mode 1))
 #+END_SRC
 
@@ -268,6 +272,17 @@ Git client. I don't use this often.
   (use-package which-key :config (which-key-mode))
 #+END_SRC
 
+**** Undo Tree                                            :undo:redo:evil:
+I have to say an undo system to evil.
+
+#+BEGIN_SRC emacs-lisp 
+  (use-package undo-tree
+    :after (:all evil)
+    :config
+    (evil-set-undo-system 'undo-tree)
+    (global-undo-tree-mode 1)) 
+#+END_SRC
+
 **** Exec Path from Shell
 Load PATH env from shell for GUI Emacs.
 
@@ -276,7 +291,6 @@ Load PATH env from shell for GUI Emacs.
     :config
     (when (display-graphic-p) (exec-path-from-shell-initialize)))
 #+END_SRC
-
 
 
 ** Org Mode                                                            :org:
@@ -318,6 +332,7 @@ Show line numbers in prog and text mode.
 *** Highlight Current Line
 #+BEGIN_SRC emacs-lisp
   ;; (add-hook 'prog-mode-hook 'hl-line-mode 1)
+  (hl-line-mode 1)
 #+END_SRC
 
 *** Ruler                                                           :ruler:
@@ -327,6 +342,13 @@ Show a ruler at the 80th column.
   (setq display-fill-column-indicator-column 80)
   (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
   (add-hook 'text-mode-hook 'display-fill-column-indicator-mode)
+#+END_SRC
+
+*** Auto Pairs
+Enable ~electric-pair-mode~ for auto brackets.
+
+#+BEGIN_SRC emacs-lisp
+  (electric-pair-mode 1)
 #+END_SRC
 
 *** GUI and macOS Tweaks
@@ -363,3 +385,9 @@ Put ~custom.el~ out of ~init.el~.
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file)
 #+END_SRC
+
+
+* Resources
+Some useful reads and resources.
+
+- [[https://nyk.ma/posts/emacs-write-your-own/][Emacs 自力求生指南——来写自己的配置吧]] by Myk Ma
