@@ -7,6 +7,8 @@
   :config
   (when (display-graphic-p) (exec-path-from-shell-initialize)))
 
+(use-package smex :config (smex-initialize))
+
 (use-package which-key :config (which-key-mode))
 
 (use-package magit)

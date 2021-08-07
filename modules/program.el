@@ -53,7 +53,11 @@
   :hook ((typescript-mode . lsp-deferred)
          (js-mode . lsp-deferred)
 	 (web-mode . lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration)))
+         (lsp-mode . lsp-enable-which-key-integration))
+  :custom (lsp-clients-typescript-server-args
+	   '("--stdio"
+	     "--tsserver-log-file"
+	     "~/.tsserver.log")))
 
 (use-package lsp-ui :commands lsp-ui-mode)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)

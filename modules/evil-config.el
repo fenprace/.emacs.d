@@ -6,7 +6,7 @@
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key "SPC" 'counsel-M-x)
   (evil-leader/set-key "b" 'counsel-switch-buffer)
-  (evil-leader/set-key "f" 'counsel-file-jump)
+  (evil-leader/set-key "f" 'counsel-fzf)
   (evil-leader/set-key "F" 'counsel-rg)
   (evil-leader/set-key "p" 'prettier-js)
   (evil-leader/set-key "." 'lsp-execute-code-action)
@@ -22,6 +22,10 @@
 (use-package evil-surround
   :config
   (global-evil-surround-mode 1))
+
+(use-package evil-org
+  :after (:all evil-leader evil)
+  :hook (org-mode . evil-org-mode))
 
 (provide 'evil-config)
 ;;; evil-config.el ends here
