@@ -9,22 +9,22 @@ Load all packages here. First make sure ~package.el~ and
 ~use-package~ first with:
     
 #+BEGIN_SRC emacs-lisp :tangle no
-  (package-refresh-contens)
-  (package-install 'use-package)
+(package-refresh-contens)
+(package-install 'use-package)
 #+END_SRC
 
 Load ~package.el~ and ~use-package~, setup sources:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (package-initialize)
+(require 'package)
+(package-initialize)
 
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
-  (require 'use-package)
-  (setq use-package-always-ensure t)
+(require 'use-package)
+(setq use-package-always-ensure t)
 #+END_SRC   
 
 *** Evil                                                             :evil:
@@ -32,19 +32,19 @@ Load ~package.el~ and ~use-package~, setup sources:
 ~evil-leader~ must be loaded before ~evil~ package.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package evil-leader
-    :config
-    (evil-leader/set-leader "<SPC>")
-    (evil-leader/set-key "SPC" 'counsel-M-x)
-    (evil-leader/set-key "b" 'counsel-switch-buffer)
-    (evil-leader/set-key "f" 'counsel-fzf)
-    (evil-leader/set-key "F" 'counsel-rg)
-    (evil-leader/set-key "p" 'prettier-js)
-    (evil-leader/set-key "." 'lsp-execute-code-action)
-    (evil-leader/set-key "/" 'comment-region)
-    (evil-leader/set-key "t" 'treemacs)
-    (evil-leader/set-key "d" 'dired)
-    (global-evil-leader-mode))
+(use-package evil-leader
+  :config
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key "SPC" 'counsel-M-x)
+  (evil-leader/set-key "b" 'counsel-switch-buffer)
+  (evil-leader/set-key "f" 'counsel-fzf)
+  (evil-leader/set-key "F" 'counsel-rg)
+  (evil-leader/set-key "p" 'prettier-js)
+  (evil-leader/set-key "." 'lsp-execute-code-action)
+  (evil-leader/set-key "/" 'comment-region)
+  (evil-leader/set-key "t" 'treemacs)
+  (evil-leader/set-key "d" 'dired)
+  (global-evil-leader-mode))
 #+END_SRC
 
 **** Evil
@@ -52,27 +52,31 @@ Load ~package.el~ and ~use-package~, setup sources:
 ~evil-quit~ command.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package evil
-    :after (:all evil-leader)
-    :config
-    (evil-ex-define-cmd "W[rite]" 'evil-write)
-    (evil-ex-define-cmd "Q[uit]" 'evil-quit)
-    (evil-mode 1))
+(use-package evil
+  :after (:all evil-leader)
+  :config
+  (evil-ex-define-cmd "W[rite]" 'evil-write)
+  (evil-ex-define-cmd "Q[uit]" 'evil-quit)
+  (evil-mode 1))
 #+END_SRC
 
 **** Evil Surround                                               :suround:
 
 #+BEGIN_SRC emacs-lisp
-  (use-package evil-surround
-    :config
-    (global-evil-surround-mode 1))
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
 #+END_SRC   
 **** Evil Org                                                        :org:
 
 #+BEGIN_SRC emacs-lisp
-  (use-package evil-org
-    :after (:all evil-leader evil)
-    :hook (org-mode . evil-org-mode))
+(use-package evil-org
+  :after (:all evil-leader evil)
+  :hook (org-mode . evil-org-mode)
+  :config
+  (setq org-src-preserve-indentation t
+	org-src-strip-leading-and-trailing-blank-lines t
+	org-src-tab-acts-natively t))
 #+END_SRC
     
 *** Ivy and Its Pals                                                  :ivy:
@@ -80,29 +84,29 @@ Load ~package.el~ and ~use-package~, setup sources:
 Ivy it self. I prefer 'vimish' ~ESC~ over ~C-g~ to quit ivy.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ivy
-    :config
-    (setq ivy-initial-inputs-alist nil)
-    (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
-    (ivy-mode))
+(use-package ivy
+  :config
+  (setq ivy-initial-inputs-alist nil)
+  (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
+  (ivy-mode))
 #+END_SRC
 
 **** Counsel                                          :counsel:projectile:
 One of ivy's pal. Also install ~counsel-projectile~ here.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel
-    :bind (("M-x" . counsel-M-x)))
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)))
 
-  (use-package counsel-projectile)
+(use-package counsel-projectile)
 #+END_SRC
 **** Swiper                                                       :swiper:
 
 #+BEGIN_SRC emacs-lisp
-  (use-package swiper
-    :config
-    (global-set-key (kbd "C-s") 'swiper)
-    (setq ivy-display-style 'fancy))
+(use-package swiper
+  :config
+  (global-set-key (kbd "C-s") 'swiper)
+  (setq ivy-display-style 'fancy))
 #+END_SRC
 
 *** Appearance
@@ -114,50 +118,50 @@ Theme packs from DOOM Emacs. Also setup theme here. I prefer
 to have light theme for GUI Emacs but dark theme for TUI.
     
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-themes
-    :config
-    (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t)
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
 
-    (if (display-graphic-p)
-        (load-theme 'doom-one-light t)
-      (load-theme 'doom-one t))
+  (if (display-graphic-p)
+      (load-theme 'doom-one-light t)
+    (load-theme 'doom-one t))
 
-    ;; Set treemacs theme
-    (setq doom-themes-treemacs-theme "doom-colors")
-    (doom-themes-treemacs-config)
+  ;; Set treemacs theme
+  (setq doom-themes-treemacs-theme "doom-colors")
+  (doom-themes-treemacs-config)
 
-    (doom-themes-visual-bell-config)
-    (doom-themes-org-config))
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
 #+END_SRC
 
 **** Doom Modeline                                              :modeline:
 Modeline from DOOM Emacs.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-modeline
-    :init
-    (doom-modeline-mode 1))
+(use-package doom-modeline
+  :init
+  (doom-modeline-mode 1))
 #+END_SRC 
 
 **** Highlight Indent Guides                                      :indent:
 Indent Guides. Avoid using this in org-mode, it looks bad. 
 
 #+BEGIN_SRC emacs-lisp
-  (use-package highlight-indent-guides
-    :hook (prog-mode . highlight-indent-guides-mode)
-    :hook (web-mode . highlight-indent-guides-mode)
-    :config
-    (setq highlight-indent-guides-method
-          (if (display-graphic-p) 'bitmap 'character)))
+(use-package highlight-indent-guides
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :hook (web-mode . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-method
+        (if (display-graphic-p) 'bitmap 'character)))
 #+END_SRC
 
 **** Rainbow Delimeters
 Have fancy colorful parentheses.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-    :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
 **** Treemacs                                   :evil:projectile:treemacs:
@@ -165,11 +169,11 @@ View files in sidebar. Also install ~treemacs-evil~,
 ~treemacs-projectile~ here.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package treemacs
-    :config
-    (setq treemacs-width 25))
-  (use-package treemacs-evil :after (:all treemacs evil))
-  (use-package treemacs-projectile :after (:all treemacs projectile))
+(use-package treemacs
+  :config
+  (setq treemacs-width 25))
+(use-package treemacs-evil :after (:all treemacs evil))
+(use-package treemacs-projectile :after (:all treemacs projectile))
 #+END_SRC
 
 *** Programming                                               :programming:
@@ -177,52 +181,54 @@ View files in sidebar. Also install ~treemacs-evil~,
 All kinds of modes.
      
 #+BEGIN_SRC emacs-lisp
-  (use-package typescript-mode)
-  (use-package yaml-mode)
-  (use-package json-mode)
-  (use-package web-mode
-    :config
-    (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode)))
+(use-package typescript-mode)
+(use-package yaml-mode)
+(use-package json-mode)
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode)))
 #+END_SRC
      
 **** Code Styles                                   :editorconfig:prettier:
      
 #+BEGIN_SRC emacs-lisp
-  (use-package editorconfig
-    :config (editorconfig-mode 1))
+(use-package editorconfig
+  :config (editorconfig-mode 1))
 
-  (use-package prettier-js
-    :hook ((js-mode . prettier-js-mode)
-           (typescript-mode . prettier-js-mode)
-           (web-mode . prettier-js-mode)))
+(use-package prettier-js
+  :hook ((js-mode . prettier-js-mode)
+         (typescript-mode . prettier-js-mode)
+         (web-mode . prettier-js-mode)))
 #+END_SRC
      
 **** Company and Flycheck                               :company:flycheck:
     
 #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :hook (after-init . global-company-mode)
-    :config (setq company-tooltip-align-annotations t
-                  company-tooltip-limit 10
-                  company-show-numbers t
-                  company-idle-delay .2
-                  company-minimum-prefix-length 1))
+(use-package company
+  :hook (after-init . global-company-mode)
+  :config
+  (setq company-tooltip-align-annotations t
+        company-tooltip-limit 10
+        company-show-numbers t
+        company-idle-delay .2
+        company-minimum-prefix-length 1
+        company-selection-wrap-around t))
 
-  (use-package flycheck
-    :init (setq flycheck-emacs-lisp-load-path 'inherit)
-    :config (global-flycheck-mode))
+(use-package flycheck
+  :init (setq flycheck-emacs-lisp-load-path 'inherit)
+  :config (global-flycheck-mode))
 #+END_SRC
 **** Yasnippet                                                   :snippet:
      
 #+BEGIN_SRC emacs-lisp
   ;;; Yasnippet
-  (use-package yasnippet
-    :config
-    (yas-global-mode 1))
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
 
-  (use-package yasnippet-snippets
-    :after (yasnippet))
+(use-package yasnippet-snippets
+  :after (yasnippet))
 #+END_SRC
      
 **** LSP Mode                                :lsp:typescript:ivy:treemacs:
@@ -230,21 +236,21 @@ Language Server Protocol.
      
 #+BEGIN_SRC emacs-lisp
   ;;; LSP
-  (use-package lsp-mode
-    :commands lsp
-    :init (setq lsp-keymap-prefix "C-c l")
-    :hook ((typescript-mode . lsp-deferred)
-           (js-mode . lsp-deferred)
-           (web-mode . lsp-deferred)
-           (lsp-mode . lsp-enable-which-key-integration))
-    :custom (lsp-clients-typescript-server-args
-             '("--stdio"
-               "--tsserver-log-file"
-               "~/.tsserver.log")))
+(use-package lsp-mode
+  :commands lsp
+  :init (setq lsp-keymap-prefix "C-c l")
+  :hook ((typescript-mode . lsp-deferred)
+         (js-mode . lsp-deferred)
+         (web-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :custom (lsp-clients-typescript-server-args
+           '("--stdio"
+             "--tsserver-log-file"
+             "~/.tsserver.log")))
 
-  (use-package lsp-ui :commands lsp-ui-mode)
-  (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
-  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-ui :commands lsp-ui-mode)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 #+END_SRC
 
 *** Project Management                                            :project:
@@ -252,46 +258,46 @@ Language Server Protocol.
 Input ~C-c C-p~ is hard.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :config
-    (setq projectile-cache-file "~/.emacs.d/.cache/projectile.cache")
-    (projectile-mode 1)
-    (define-key projectile-mode-map (kbd "M-p")
-      'projectile-command-map))
+(use-package projectile
+  :config
+  (setq projectile-cache-file "~/.emacs.d/.cache/projectile.cache")
+  (projectile-mode 1)
+  (define-key projectile-mode-map (kbd "M-p")
+    'projectile-command-map))
 #+END_SRC
 
 **** Magit                                                         :magit:
 Git client. I don't use this often.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package magit)
+(use-package magit)
 #+END_SRC
 
 *** Misc                                                             :misc:
 
 #+BEGIN_SRC emacs-lisp
-  (use-package smex :config (smex-initialize))
-  (use-package which-key :config (which-key-mode))
+(use-package smex :config (smex-initialize))
+(use-package which-key :config (which-key-mode))
 #+END_SRC
 
 **** Undo Tree                                            :undo:redo:evil:
 I have to say an undo system to evil.
 
 #+BEGIN_SRC emacs-lisp 
-  (use-package undo-tree
-    :after (:all evil)
-    :config
-    (evil-set-undo-system 'undo-tree)
-    (global-undo-tree-mode 1)) 
+(use-package undo-tree
+  :after (:all evil)
+  :config
+  (evil-set-undo-system 'undo-tree)
+  (global-undo-tree-mode 1)) 
 #+END_SRC
 
 **** Exec Path from Shell
 Load PATH env from shell for GUI Emacs.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package exec-path-from-shell
-    :config
-    (when (display-graphic-p) (exec-path-from-shell-initialize)))
+(use-package exec-path-from-shell
+  :config
+  (when (display-graphic-p) (exec-path-from-shell-initialize)))
 #+END_SRC
 
 
@@ -300,14 +306,20 @@ Load PATH env from shell for GUI Emacs.
 Automaticaly format file before saving.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my/org-mode-before-save ()
-    "Auto align tags before save in org-mode"
-    (interactive)
-    (when (eq major-mode 'org-mode)
-      (org-align-tags t)
-      (org-indent-region (point-min) (point-max))))
+(defun my/org-mode-before-save ()
+  "Auto align tags before save in org-mode"
+  (interactive)
+  (when (eq major-mode 'org-mode)
+    (org-align-tags t)
+    (org-indent-region (point-min) (point-max))))
 
-  (add-hook 'before-save-hook 'my/org-mode-before-save)
+(add-hook 'before-save-hook 'my/org-mode-before-save)
+#+END_SRC
+
+*** Auto Indent                                                      :evil:
+#+BEGIN_SRC emacs-lisp
+;; (add-hook 'org-mode-hook
+;;          (lambda () (setq evil-auto-indent nil)))
 #+END_SRC
 
 ** Tweaks                                                             :init:
@@ -315,77 +327,77 @@ Usually, something I want to put into my ~init.el~ goes here.
 
 *** Lockfiles, Backup and Auto-save files        :autosave:backup:lockfile:
 #+BEGIN_SRC emacs-lisp
-  ;; Centralize backup files
-  (setq auto-save-file-name-transforms `((".*" "~/.emacs.d/.cache/autosaves/" t)))
-  (setq make-backup-files nil) ;; Stop making backup files
-  (setq create-lockfiles nil) ;; Stop creating lockfiles
+;; Centralize backup files
+(setq auto-save-file-name-transforms `((".*" "~/.emacs.d/.cache/autosaves/" t)))
+(setq make-backup-files nil) ;; Stop making backup files
+(setq create-lockfiles nil) ;; Stop creating lockfiles
 #+END_SRC
 
 *** Show Line Numbers
 Show line numbers in prog and text mode.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar display-line-numbers-type)
-  (setq display-line-numbers-type 'relative)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (add-hook 'text-mode-hook 'display-line-numbers-mode)
+(defvar display-line-numbers-type)
+(setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'text-mode-hook 'display-line-numbers-mode)
 #+END_SRC
 
 *** Highlight Current Line
 #+BEGIN_SRC emacs-lisp
-  ;; (add-hook 'prog-mode-hook 'hl-line-mode 1)
-  (hl-line-mode 1)
+;; (add-hook 'prog-mode-hook 'hl-line-mode 1)
+(hl-line-mode 1)
 #+END_SRC
 
 *** Ruler                                                           :ruler:
 Show a ruler at the 80th column.
 
 #+BEGIN_SRC emacs-lisp
-  (setq display-fill-column-indicator-column 80)
-  (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
-  (add-hook 'text-mode-hook 'display-fill-column-indicator-mode)
+(setq display-fill-column-indicator-column 80)
+(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
+(add-hook 'text-mode-hook 'display-fill-column-indicator-mode)
 #+END_SRC
 
 *** Auto Pairs
 Enable ~electric-pair-mode~ for auto brackets.
 
 #+BEGIN_SRC emacs-lisp
-  (electric-pair-mode 1)
+(electric-pair-mode 1)
 #+END_SRC
 
 *** GUI and macOS Tweaks
 #+BEGIN_SRC emacs-lisp
-  ;; Maximized at startup
-  (add-hook 'window-setup-hook 'toggle-frame-maximized t)
+;; Maximized at startup
+(add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
-  ;; Fix mouse scrolling does not work in terminal
-  (unless (display-graphic-p)
-    (global-set-key (kbd "<mouse-4>") (kbd "<wheel-up>"))
-    (global-set-key (kbd "<mouse-5>") (kbd "<wheel-down>")))
+;; Fix mouse scrolling does not work in terminal
+(unless (display-graphic-p)
+  (global-set-key (kbd "<mouse-4>") (kbd "<wheel-up>"))
+  (global-set-key (kbd "<mouse-5>") (kbd "<wheel-down>")))
 
-  ;; Enable mouse for TUI Emacs
-  (unless (display-graphic-p)
-    (xterm-mouse-mode 1))
+;; Enable mouse for TUI Emacs
+(unless (display-graphic-p)
+  (xterm-mouse-mode 1))
 
-  ;; macOS Tweaks
-  (when (eq system-type 'darwin)
-    ;; Do not swap option and command on macOS
-    (setq mac-option-modifier 'meta)
-    (setq mac-command-modifier 'hyper)
+;; macOS Tweaks
+(when (eq system-type 'darwin)
+  ;; Do not swap option and command on macOS
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'hyper)
 
-    ;; Enable ligatures on macOS
-    (mac-auto-operator-composition-mode t)
+  ;; Enable ligatures on macOS
+  (mac-auto-operator-composition-mode t)
 
-    ;; Bind Command-V to Paste
-    (global-set-key (kbd "H-v") 'evil-paste-before)
-    (global-set-key (kbd "H-a") 'mark-whole-buffer))
+  ;; Bind Command-V to Paste
+  (global-set-key (kbd "H-v") 'evil-paste-before)
+  (global-set-key (kbd "H-a") 'mark-whole-buffer))
 #+END_SRC
 *** Isolate custom.el
 Put ~custom.el~ out of ~init.el~.
 
 #+BEGIN_SRC emacs-lisp
-  (setq custom-file "~/.emacs.d/custom.el")
-  (load custom-file)
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
 #+END_SRC
 
 
