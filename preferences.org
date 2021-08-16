@@ -41,7 +41,6 @@ Load ~package.el~ and ~use-package~, setup sources:
   (evil-leader/set-key "F" 'counsel-rg)
   (evil-leader/set-key "p" 'prettier-js)
   (evil-leader/set-key "." 'lsp-execute-code-action)
-  (evil-leader/set-key "/" 'comment-region)
   (evil-leader/set-key "t" 'treemacs)
   (evil-leader/set-key "d" 'dired)
   (global-evil-leader-mode))
@@ -55,9 +54,15 @@ Load ~package.el~ and ~use-package~, setup sources:
 (use-package evil
   :after (:all evil-leader)
   :config
+  (setq evil-want-fine-undo t)
+  (setq evil-esc-delay 0.0)
+  (evil-mode 1)
   (evil-ex-define-cmd "W[rite]" 'evil-write)
   (evil-ex-define-cmd "Q[uit]" 'evil-quit)
-  (evil-mode 1))
+  (define-key evil-insert-state-map (kbd "C-a") 'evil-beginning-of-line)
+  (define-key evil-insert-state-map (kbd "C-e") 'evil-end-of-line)
+  (define-key evil-insert-state-map (kbd "C-u") 'evil-delete-back-to-indentation)
+  (define-key evil-insert-state-map (kbd "C-k") 'evil-delete-line))
 #+END_SRC
 
 **** Evil Surround                                               :suround:
@@ -67,18 +72,28 @@ Load ~package.el~ and ~use-package~, setup sources:
   :config
   (global-evil-surround-mode 1))
 #+END_SRC   
+
 **** Evil Org                                                        :org:
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil-org
   :after (:all evil-leader evil)
-  :hook (org-mode . evil-org-mode)
-  :config
-  (setq org-src-preserve-indentation t
-	org-src-strip-leading-and-trailing-blank-lines t
-	org-src-tab-acts-natively t))
+  :hook (org-mode . evil-org-mode))
+
+;; See: https://github.com/Somelauw/evil-org-mode#common-issues
+(when (display-graphic-p) (setq evil-want-C-i-jump nil))
 #+END_SRC
     
+**** Evil Nerd Commenter
+Easily comment and uncomment lines.
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-nerd-commenter
+  :after (:all evil-leader evil)
+  :config
+  (evil-leader/set-key "/" 'evilnc-comment-or-uncomment-lines))
+#+END_SRC
+
 *** Ivy and Its Pals                                                  :ivy:
 **** Ivy
 Ivy it self. I prefer 'vimish' ~ESC~ over ~C-g~ to quit ivy.
@@ -100,6 +115,7 @@ One of ivy's pal. Also install ~counsel-projectile~ here.
 
 (use-package counsel-projectile)
 #+END_SRC
+
 **** Swiper                                                       :swiper:
 
 #+BEGIN_SRC emacs-lisp
@@ -124,8 +140,8 @@ to have light theme for GUI Emacs but dark theme for TUI.
         doom-themes-enable-italic t)
 
   (if (display-graphic-p)
-      (load-theme 'doom-one-light t)
-    (load-theme 'doom-one t))
+      (load-theme 'doom-acario-light t)
+    (load-theme 'doom-badger t))
 
   ;; Set treemacs theme
   (setq doom-themes-treemacs-theme "doom-colors")
@@ -149,8 +165,8 @@ Indent Guides. Avoid using this in org-mode, it looks bad.
 
 #+BEGIN_SRC emacs-lisp
 (use-package highlight-indent-guides
-  :hook (prog-mode . highlight-indent-guides-mode)
-  :hook (web-mode . highlight-indent-guides-mode)
+  ;; :hook (prog-mode . highlight-indent-guides-mode)
+  ;; :hook (web-mode . highlight-indent-guides-mode)
   :config
   (setq highlight-indent-guides-method
         (if (display-graphic-p) 'bitmap 'character)))
@@ -219,6 +235,7 @@ All kinds of modes.
   :init (setq flycheck-emacs-lisp-load-path 'inherit)
   :config (global-flycheck-mode))
 #+END_SRC
+
 **** Yasnippet                                                   :snippet:
      
 #+BEGIN_SRC emacs-lisp
@@ -246,7 +263,7 @@ Language Server Protocol.
   :custom (lsp-clients-typescript-server-args
            '("--stdio"
              "--tsserver-log-file"
-             "~/.tsserver.log")))
+             ".tsserver.log")))
 
 (use-package lsp-ui :commands lsp-ui-mode)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
@@ -300,7 +317,6 @@ Load PATH env from shell for GUI Emacs.
   (when (display-graphic-p) (exec-path-from-shell-initialize)))
 #+END_SRC
 
-
 ** Org Mode                                                            :org:
 *** Auto Format
 Automaticaly format file before saving.
@@ -316,10 +332,16 @@ Automaticaly format file before saving.
 (add-hook 'before-save-hook 'my/org-mode-before-save)
 #+END_SRC
 
-*** Auto Indent                                                      :evil:
+*** Indentation                                                      :evil:
+
 #+BEGIN_SRC emacs-lisp
 ;; (add-hook 'org-mode-hook
 ;;          (lambda () (setq evil-auto-indent nil)))
+(setq org-src-preserve-indentation t
+      org-src-strip-leading-and-trailing-blank-lines t
+      org-src-fontify-natively t
+      org-edit-src-content-indentation 0
+      org-src-tab-acts-natively t)
 #+END_SRC
 
 ** Tweaks                                                             :init:
@@ -338,7 +360,7 @@ Show line numbers in prog and text mode.
 
 #+BEGIN_SRC emacs-lisp
 (defvar display-line-numbers-type)
-(setq display-line-numbers-type 'relative)
+;; (setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'text-mode-hook 'display-line-numbers-mode)
 #+END_SRC
@@ -366,6 +388,7 @@ Enable ~electric-pair-mode~ for auto brackets.
 #+END_SRC
 
 *** GUI and macOS Tweaks
+
 #+BEGIN_SRC emacs-lisp
 ;; Maximized at startup
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
@@ -392,6 +415,14 @@ Enable ~electric-pair-mode~ for auto brackets.
   (global-set-key (kbd "H-v") 'evil-paste-before)
   (global-set-key (kbd "H-a") 'mark-whole-buffer))
 #+END_SRC
+
+*** Font Settings
+
+#+BEGIN_SRC emacs-lisp
+(let ((iosevka (font-spec :family "Iosevka" :size 14 :width 'expanded)))
+  (set-frame-font iosevka))
+#+END_SRC
+
 *** Isolate custom.el
 Put ~custom.el~ out of ~init.el~.
 
