@@ -1,0 +1,284 @@
+#+TITLE: My Emacs Preferences
+#+STARTUP: content indent
+#+PROPERTY: :tangle yes :results silent :exports code
+
+* Preset
+Load all packages here. First make sure =package.el= and
+=use-package.el= are both installed. Otherwise, install
+=use-package= first with:
+    
+#+BEGIN_SRC emacs-lisp :tangle no
+(package-refresh-contens)
+(package-install 'use-package)
+#+END_SRC
+
+Load =package.el= and =use-package=, setup ELPA mirrors:
+
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(setq package-archives
+      '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+        ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+        ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
+(package-initialize)
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+#+END_SRC
+
+* Enhancement
+** Vertico
+
+#+BEGIN_SRC emacs-lisp
+(use-package vertico
+  :config
+  (vertico-mode t))
+
+(use-package orderless
+  :config
+  (setq completion-styles '(orderless)))
+
+(use-package marginalia
+  :config
+  (marginalia-mode t))
+
+(use-package consult)
+
+(use-package which-key
+  :config (which-key-mode))
+#+END_SRC
+
+** Treemacs
+Display a nice sidebar file explorer.
+
+#+BEGIN_SRC emacs-lisp
+(use-package treemacs
+  :config
+  (setq treemacs-width 25))
+#+END_SRC
+
+* Editing
+** Evil Leader
+This must be loaded before evil.
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-leader
+  :config
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key "<SPC>" 'execute-extended-command)
+  (evil-leader/set-key "b" 'consult-buffer)
+  (evil-leader/set-key "cc" 'evilnc-comment-or-uncomment-lines)
+  (evil-leader/set-key "eb" 'eval-buffer)
+  (evil-leader/set-key "s" 'consult-line)
+  (evil-leader/set-key "t" 'treemacs)
+  (global-evil-leader-mode))
+#+END_SRC
+
+** Evil
+Load evil itself.
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil
+  :after (:all evil-leader)
+  :config
+  (setq evil-want-fine-undo t)
+  (setq evil-esc-delay 0.0)
+  (evil-mode t))
+#+END_SRC
+
+** Undo Tree
+This is required by evil as the undo system.
+
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+  :after (:all evil)
+  :config
+  (global-undo-tree-mode 1)
+  (evil-set-undo-system 'undo-tree))
+#+END_SRC
+
+** Company
+An auto-completion engine.
+
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :hook (after-init . global-company-mode)
+  :config
+  (setq company-tooltip-align-annotations t
+	company-tooltip-limit 8
+	company-show-quick-access t
+	company-idle-delay .2
+	company-minimum-prefix-length 1
+	company-selection-wrap-around t))
+#+END_SRC
+
+** Flycheck
+Show errors from linters.
+
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :config
+  (global-flycheck-mode))
+#+END_SRC
+
+* Org Mode                                                              :org:
+** Auto Format
+Automaticaly format file before saving.
+
+#+BEGIN_SRC emacs-lisp
+(defun z/org-mode-before-save ()
+  "Auto align tags before save in org-mode"
+  (interactive)
+
+  (when (eq major-mode 'org-mode)
+    (org-align-tags t)
+    (org-indent-region (point-min) (point-max))))
+
+(add-hook 'before-save-hook 'z/org-mode-before-save)
+#+END_SRC
+
+** Indentation                                                        :evil:
+#+BEGIN_SRC emacs-lisp
+;; (add-hook 'org-mode-hook
+;;          (lambda () (setq evil-auto-indent nil)))
+(setq org-src-preserve-indentation t
+      org-src-strip-leading-and-trailing-blank-lines t
+      org-src-fontify-natively t
+      org-edit-src-content-indentation 0
+      org-src-tab-acts-natively t)
+#+END_SRC
+
+* Programming
+** Evil Nerd Commenter
+#+BEGIN_SRC emacs-lisp
+(use-package evil-nerd-commenter
+  :after (:all evil-leader evil))
+#+END_SRC
+
+** Rainbow Delimeters
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode)
+  :hook (text-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+** Language Protocol Server
+Use =eglot= as the LSP server.
+
+#+BEGIN_SRC emacs-lisp
+(use-package eglot)
+#+END_SRC
+
+** TypeScript
+
+#+BEGIN_SRC emacs-lisp
+(use-package typescript-mode)
+#+END_SRC
+
+* Misc
+** Exec Path from Shell
+This helps Emacs to load the =PATH= environment variable.
+
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
+#+END_SRC
+
+* Appearance
+** Doom Themes
+Use different themes under TUI and GUI.
+
+#+BEGIN_SRC emacs-lisp
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+
+  (if (display-graphic-p)
+      (load-theme 'doom-acario-light t)
+    (load-theme 'doom-badger t))
+
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
+#+END_SRC
+
+** Font Face
+=Iosevka= is my favourite font family for programming.
+
+#+BEGIN_SRC emacs-lisp
+(defvar z/font-size 18)
+(defvar z/font-iosevka
+  (font-spec
+   :family "Iosevka"
+   :size z/font-size))
+(defvar z/font-iosevka-extended
+  (font-spec
+   :family "Iosevka"
+   :size z/font-size
+   :width 'expanded))
+(set-frame-font z/font-iosevka)
+#+END_SRC
+
+** Line Numbers
+Always display line numbers.
+
+#+BEGIN_SRC emacs-lisp
+;; (global-display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'text-mode-hook 'display-line-numbers-mode)
+#+END_SRC
+
+** Highlight Current Line
+Always highlight the line under the cursor.
+
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode 1)
+#+END_SRC
+
+** Column Indicator
+Show a ruler at the 80th column.
+
+#+BEGIN_SRC emacs-lisp
+(setq display-fill-column-indicator-column 80)
+(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
+(add-hook 'text-mode-hook 'display-fill-column-indicator-mode)
+#+END_SRC
+
+** GUI Specfic Preferences
+If Emacs runs under GUI:
+- Enable smooth scroll
+- Hide the toolbar
+- Hide the scrollbar
+
+#+BEGIN_SRC emacs-lisp
+(if (display-graphic-p)
+    (progn
+      (pixel-scroll-mode 1)
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)))
+#+END_SRC
+
+* Tweaks
+** Disable Auto Save
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-default nil)
+#+END_SRC
+
+** Disable Backup Files
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+#+END_SRC
+
+** Disable Lock Files
+#+BEGIN_SRC emacs-lisp
+(setq create-lockfiles nil)
+#+END_SRC
+
+
+** Split =custom.el= Out
+#+BEGIN_SRC emacs-lisp
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+#+END_SRC
