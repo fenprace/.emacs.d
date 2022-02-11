@@ -2,7 +2,7 @@
 #+STARTUP: content indent
 #+PROPERTY: :tangle yes :results silent :exports code
 
-* Preset
+* Preset                                                            :package:
 Load all packages here. First make sure =package.el= and
 =use-package.el= are both installed. Otherwise, install
 =use-package= first with:
@@ -27,25 +27,48 @@ Load =package.el= and =use-package=, setup ELPA mirrors:
 #+END_SRC
 
 * Enhancement
-** Vertico
+** Vertico family
+*** Vertico
+Enhance =M-x=.
 
 #+BEGIN_SRC emacs-lisp
 (use-package vertico
   :config
   (vertico-mode t))
+#+END_SRC
 
+*** Orderless
+Orderless completion style.
+
+#+BEGIN_SRC emacs-lisp
 (use-package orderless
   :config
   (setq completion-styles '(orderless)))
+#+END_SRC
 
+*** Marginalia
+Enhance minibuffer.
+
+#+BEGIN_SRC emacs-lisp
 (use-package marginalia
   :config
   (marginalia-mode t))
+#+END_SRC
 
+*** Consult
+Enhance searching.
+
+#+BEGIN_SRC emacs-lisp
 (use-package consult)
+#+END_SRC
 
+** Which Key
+Show keybind hints.
+
+#+BEGIN_SRC emacs-lisp
 (use-package which-key
-  :config (which-key-mode))
+  :config
+  (which-key-mode))
 #+END_SRC
 
 ** Treemacs
@@ -170,14 +193,16 @@ Use =eglot= as the LSP server.
 (use-package eglot)
 #+END_SRC
 
-** TypeScript
+** JavaScript and TypeScript
+Add language support for JavaScript and TypeScript.
 
 #+BEGIN_SRC emacs-lisp
 (use-package typescript-mode)
+(use-package web-mode)
+(use-package tide)
 #+END_SRC
 
-* Misc
-** Exec Path from Shell
+*** Exec Path from Shell
 This helps Emacs to load the =PATH= environment variable.
 
 #+BEGIN_SRC emacs-lisp
@@ -186,6 +211,16 @@ This helps Emacs to load the =PATH= environment variable.
   (exec-path-from-shell-initialize))
 #+END_SRC
 
+*** Add Node Modules Path                                        :flycheck:
+Add =node_modules/.bin= into =exec-path=. This helps =flycheck=
+to find the =eslint=.
+
+#+BEGIN_SRC emacs-lisp
+(use-package add-node-modules-path
+  :hook (typescript-mode . add-node-modules-path))
+#+END_SRC
+
+* Misc
 * Appearance
 ** Doom Themes
 Use different themes under TUI and GUI.
@@ -275,7 +310,6 @@ If Emacs runs under GUI:
 #+BEGIN_SRC emacs-lisp
 (setq create-lockfiles nil)
 #+END_SRC
-
 
 ** Split =custom.el= Out
 #+BEGIN_SRC emacs-lisp
