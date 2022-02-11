@@ -252,22 +252,31 @@ All kinds of modes.
 Language Server Protocol. 
      
 #+BEGIN_SRC emacs-lisp
-  ;;; LSP
+;; LSP
 (use-package lsp-mode
   :commands lsp
   :init (setq lsp-keymap-prefix "C-c l")
-  :hook ((typescript-mode . lsp-deferred)
-         (js-mode . lsp-deferred)
-         (web-mode . lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration))
-  :custom (lsp-clients-typescript-server-args
-           '("--stdio"
-             "--tsserver-log-file"
-             ".tsserver.log")))
+  :hook (
+					; (typescript-mode . lsp-deferred)
+					; (js-mode . lsp-deferred)
+					; (web-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration)))
 
 (use-package lsp-ui :commands lsp-ui-mode)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+#+END_SRC
+
+**** Tide                                                :tide:typescript:
+TypeScript Interactive Development Environment.
+
+#+BEGIN_SRC emacs-lisp
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
 #+END_SRC
 
 *** Project Management                                            :project:
@@ -277,6 +286,7 @@ Input ~C-c C-p~ is hard.
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :config
+  (setq projectile-project-search-path '("~/projects/"))
   (setq projectile-cache-file "~/.emacs.d/.cache/projectile.cache")
   (projectile-mode 1)
   (define-key projectile-mode-map (kbd "M-p")
@@ -391,7 +401,7 @@ Enable ~electric-pair-mode~ for auto brackets.
 
 #+BEGIN_SRC emacs-lisp
 ;; Maximized at startup
-(add-hook 'window-setup-hook 'toggle-frame-maximized t)
+;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 ;; Fix mouse scrolling does not work in terminal
 (unless (display-graphic-p)
