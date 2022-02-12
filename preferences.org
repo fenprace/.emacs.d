@@ -1,4 +1,4 @@
-#+TITLE: My Emacs Preferences
++TITLE: My Emacs Preferences
 #+STARTUP: content indent
 #+PROPERTY: :tangle yes :results silent :exports code
 
@@ -193,13 +193,42 @@ Use =eglot= as the LSP server.
 (use-package eglot)
 #+END_SRC
 
+** Rust
+Language support for Rust.
+
+#+BEGIN_SRC emacs-lisp
+(use-package rust-mode)
+#+END_SRC
+
 ** JavaScript and TypeScript
 Add language support for JavaScript and TypeScript.
+
+*** TODO Add support of JSX and TSX files
+*** Tide                                                         :flycheck:
+TypeScript Interactive Development Environment for Emacs.
 
 #+BEGIN_SRC emacs-lisp
 (use-package typescript-mode)
 (use-package web-mode)
-(use-package tide)
+
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+(flycheck-add-mode 'javascript-eslint 'typescript-mode)
+
+(use-package tide
+  :after (:all company flycheck)
+  :config
+  (defun setup-tide-mode ()
+    (interactive)
+    (flycheck-add-next-checker 'javascript-tide 'javascript-eslint 'append)
+    (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)
+    (flycheck-add-next-checker 'jsx-tide 'javascript-eslint 'append)
+    (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
+    (tide-setup)
+    (flycheck-mode 1)
+    (eldoc-mode 1)
+    (tide-hl-identifier-mode 1))
+  (add-hook 'js-mode-hook 'setup-tide-mode)
+  (add-hook 'typescript-mode-hook 'setup-tide-mode))
 #+END_SRC
 
 *** Exec Path from Shell
@@ -232,11 +261,20 @@ Use different themes under TUI and GUI.
         doom-themes-enable-italic t)
 
   (if (display-graphic-p)
-      (load-theme 'doom-acario-light t)
+      (load-theme 'doom-one-light t)
     (load-theme 'doom-badger t))
 
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
+#+END_SRC
+
+** Doom Modeline
+A beautiful status bar.
+
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :config
+  (doom-modeline-mode 1))
 #+END_SRC
 
 ** Font Face
@@ -316,3 +354,20 @@ If Emacs runs under GUI:
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 #+END_SRC
+
+** macOS Specfic Preferences
+Swap =option= back with =command=.
+
+#+BEGIN_SRC emacs-lisp
+;; (when (eq system-type 'darwin)
+;;   (setq mac-option-modifier 'meta)
+;;   (setq mac-command-modifier 'hyper))
+#+END_SRC
+
+Enable Ligatures.
+
+#+BEGIN_SRC emacs-lisp
+(when (eq system-type 'darwin)
+  (mac-auto-operator-composition-mode t))
+#+END_SRC
+
