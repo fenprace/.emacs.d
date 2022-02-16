@@ -2,15 +2,22 @@
 #+STARTUP: content indent
 #+PROPERTY: :tangle yes :results silent :exports code
 
-* Preset                                                            :package:
-Load all packages here. First make sure =package.el= and
-=use-package.el= are both installed. Otherwise, install
-=use-package= first with:
+* README                                                            :package:
+First make sure =~/.emacs.d/custom.el= exists:
+
+#+BEGIN_SRC shell :tangle no
+touch ~/.emacs.d/custom.el
+#+END_SRC
+
+Also make sure =package.el= and =use-package.el= are both
+installed. Otherwise, install it with:
     
 #+BEGIN_SRC emacs-lisp :tangle no
 (package-refresh-contens)
 (package-install 'use-package)
 #+END_SRC
+
+* Package Preset
 
 Load =package.el= and =use-package=, setup ELPA mirrors:
 
@@ -326,11 +333,9 @@ If Emacs runs under GUI:
 - Hide the scrollbar
 
 #+BEGIN_SRC emacs-lisp
-(if (display-graphic-p)
-    (progn
-      (pixel-scroll-mode 1)
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1)))
+(pixel-scroll-mode 1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 #+END_SRC
 
 * Tweaks

@@ -1,5 +1,7 @@
 .cache/
 auto-save-list/
 elpa/
+transient/
 
+custom.el
 preferences.el
